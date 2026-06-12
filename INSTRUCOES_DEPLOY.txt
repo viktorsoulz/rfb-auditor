@@ -1,0 +1,95 @@
+═══════════════════════════════════════════════════════════
+  RFB AUDITOR — DEPLOY SUPABASE + VERCEL
+  Siga exatamente nesta ordem
+═══════════════════════════════════════════════════════════
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PASSO 1 — Criar tabelas no Supabase
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Acesse: supabase.com/dashboard/project/akjljpxzvuryqizbrxih
+2. No menu esquerdo, clique em "SQL Editor" (ícone de terminal)
+3. Clique em "New query"
+4. Cole TODO o conteúdo do arquivo: supabase/migration.sql
+5. Clique em "Run" (ou Ctrl+Enter)
+6. Deve aparecer "Success. No rows returned"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PASSO 2 — Configurar e-mail de confirmação (opcional)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Para não precisar confirmar e-mail ao cadastrar (mais fácil para uso pessoal):
+1. Supabase → Authentication → Providers → Email
+2. Desative "Confirm email"
+3. Salve
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PASSO 3 — Instalar dependência no projeto
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Abra o terminal na pasta do projeto (rfb-auditor) e rode:
+
+  npm install @supabase/supabase-js
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PASSO 4 — Substituir arquivos no projeto
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Copie os arquivos desta pasta para o projeto:
+
+  .env.local              → raiz do projeto (rfb-auditor/.env.local)
+  src/lib/supabase.js     → rfb-auditor/src/lib/supabase.js  (CRIAR pasta lib)
+  src/hooks/useStorage.js → rfb-auditor/src/hooks/useStorage.js  (SUBSTITUIR)
+  src/pages/Login.jsx     → rfb-auditor/src/pages/Login.jsx  (CRIAR)
+  src/App.jsx             → rfb-auditor/src/App.jsx  (SUBSTITUIR)
+  src/components/Layout.jsx → rfb-auditor/src/components/Layout.jsx  (SUBSTITUIR)
+
+IMPORTANTE: Abra o arquivo .env.local e substitua a VITE_SUPABASE_ANON_KEY
+pela chave completa que você copiou do Supabase → Settings → API Keys → anon public
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PASSO 5 — Testar localmente
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  npm run dev
+
+Deve aparecer a tela de login. Crie uma conta e veja se consegue entrar.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PASSO 6 — Subir para o GitHub
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Crie uma conta em github.com (se não tiver)
+2. Crie um repositório PRIVADO chamado "rfb-auditor"
+3. Na pasta do projeto, rode:
+
+  git init
+  git add .
+  git commit -m "RFB Auditor - deploy inicial"
+  git branch -M main
+  git remote add origin https://github.com/SEU_USUARIO/rfb-auditor.git
+  git push -u origin main
+
+ATENÇÃO: O .env.local NÃO vai para o GitHub (está no .gitignore automaticamente)
+As variáveis de ambiente serão configuradas no Vercel no próximo passo.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PASSO 7 — Deploy no Vercel
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Acesse vercel.com e faça login com sua conta GitHub
+2. Clique em "Add New Project"
+3. Importe o repositório "rfb-auditor"
+4. Framework Preset: Vite (detecta automaticamente)
+5. ANTES de clicar em Deploy, clique em "Environment Variables" e adicione:
+
+   VITE_SUPABASE_URL      = https://akjljpxzvuryqizbrxih.supabase.co
+   VITE_SUPABASE_ANON_KEY = [sua anon key completa]
+
+6. Clique em Deploy
+7. Aguarde ~2 minutos
+8. Seu app estará em: https://rfb-auditor-XXXX.vercel.app
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PASSO 8 — Configurar URL no Supabase (para auth funcionar)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Supabase → Authentication → URL Configuration
+2. Em "Site URL", coloque: https://rfb-auditor-XXXX.vercel.app
+3. Em "Redirect URLs", adicione: https://rfb-auditor-XXXX.vercel.app/**
+4. Salve
+
+Pronto! O app estará online com login e sync automático.
+═══════════════════════════════════════════════════════════
